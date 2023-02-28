@@ -1,0 +1,31 @@
+macro loop
+nextval
+getval inline" = stack[stackptr]; stackptr-=1; var  " nextval getval inline" = 0; while ( " getval inline" <  " prevval getval nextval inline" ){ " getval inline" +=1; "
+endmac
+macro beginif
+inline" a = stack[stackptr]; stackptr-=1; b = stack[stackptr]; if(a "
+endmac
+macro endif
+inline" b ){ "
+endmac
+macro if==
+$beginif inline" == " $endif
+endmac
+macro if<
+$beginif inline" < " $endif
+endmac
+macro if>
+$beginif inline" > " $endif
+endmac
+macro if>=
+$beginif inline" >= " $endif
+endmac
+macro if<=
+$beginif inline" <= " $endif
+endmac
+proc dup
+inline" stack[stackptr+1] = stack[stackptr]; stackptr+=1; "
+endproc
+proc swap
+inline" a = stack[stackptr]; b = stack[stackptr-1]; stack[stackptr] = b; stack[stackptr-1] = a "
+endproc

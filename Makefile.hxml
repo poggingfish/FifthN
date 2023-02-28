@@ -1,0 +1,13 @@
+--cwd source
+--main Main
+--library console.hx
+--cpp ../bin/fncc
+--next
+--cwd ../preprocess
+--main Main
+--library console.hx
+--cpp ../bin/fnpp
+--next
+--cwd ../cli
+--main Main
+--cpp ../bin/fn
