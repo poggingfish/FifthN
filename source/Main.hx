@@ -84,13 +84,17 @@ class Main{
                 var _ = parsestr(i,prog);
                 i = cast _[0];
                 var sbuf: String = cast _[1];
-                out.writeString(sbuf+"\n");
+                out.writeString(sbuf);
             }
             else if (word.charAt(0) == "@"){
                 out.writeString("a = "+word.substr(1) + "(stack,stackptr);stack = a[0];stackptr=a[1];\n");
             }
             else if (word.charAt(0) == "$"){
                 callstack.push(i);
+                if (macros.get(word.substr(1)) == null){
+                    Console.error("Invalid macro " + word.substr(1));
+                    Sys.exit(1);
+                }
                 i = macros.get(word.substr(1))-1;
             }
             else if (word == "nextval"){
@@ -103,13 +107,13 @@ class Main{
                 out.writeString("val_"+val);
             }
             else if (word == "init"){
-                out.writeString("var " + prog[++i] + " = stack[stackptr]; stackptr=stackptr-1;\n");
+                out.writeString("var var_" + prog[++i] + " = stack[stackptr]; stackptr=stackptr-1;\n");
             }
             else if (word == "set"){
-                out.writeString(prog[++i] + " = stack[stackptr]; stackptr=stackptr-1;\n");
+                out.writeString("var_"+prog[++i] + " = stack[stackptr]; stackptr=stackptr-1;\n");
             }
             else if (word == "get"){
-                out.writeString("stackptr=stackptr+1; stack[stackptr] = " + prog[++i]+";\n");
+                out.writeString("stackptr=stackptr+1; stack[stackptr] = var_" + prog[++i]+";\n");
             }
             else if(Std.parseInt(word) != null){
                 out.writeString("stackptr=stackptr+1;stack[stackptr]="+word+";\n");

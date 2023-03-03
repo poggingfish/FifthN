@@ -8,11 +8,23 @@ class Main{
             Sys.exit(1);
         }
         Sys.println("Preprocessing..");
-        Sys.command("fnpp", [Sys.args()[0]]);
+        if(Sys.command("fnpp", [Sys.args()[0]]) != 0){
+            Sys.println("Process fnpp exited with non zero exit code.");
+            Sys.exit(1);
+        }
         Sys.println("Compiling..");
-        Sys.command("fncc", ["out.fn"]);
-        Sys.command("nekoc", ["out.neko"]);
-        Sys.command("rm", ["out.fn"]);
+        if (Sys.command("fncc", ["out.fn"]) != 0){
+            Sys.println("Process fncc exited with non zero exit code.");
+            Sys.exit(1);
+        }
+        if (Sys.command("nekoc", ["out.neko"]) != 0){
+            Sys.println("Process nekoc exited with non zero exit code.");
+            Sys.exit(1);
+        }
+        if (Sys.command("rm", ["out.fn"]) != 0){
+            Sys.println("Process rm exited with non zero exit code.");
+            Sys.exit(1);
+        }
         Sys.println("Compiled!!");
     }
 }

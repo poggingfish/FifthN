@@ -1,3 +1,7 @@
+inline" var __input__ = $loader.loadprim("lib/in@input",0); "
+inline" var __fopen__ = $loader.loadprim("std@file_open",2); "
+inline" var __fwritec__ = $loader.loadprim("std@file_write_char",2); "
+inline" var __u8get__ = $loader.loadprim("std@utf8_get",2); "
 macro loop
 nextval
 getval inline" = stack[stackptr]; stackptr-=1; var  " nextval getval inline" = 0; while ( " getval inline" <  " prevval getval nextval inline" ){ " getval inline" +=1; "
@@ -28,4 +32,98 @@ inline" stack[stackptr+1] = stack[stackptr]; stackptr+=1; "
 endproc
 proc swap
 inline" a = stack[stackptr]; b = stack[stackptr-1]; stack[stackptr] = b; stack[stackptr-1] = a "
+endproc
+proc println
+. " \n " .
+endproc
+macro return
+inline" var tmp = $amake(4);tmp[0] = stack;tmp[1]=stackptr;return tmp; "
+endmac
+proc tostr
+" " +
+endproc
+proc type
+init f
+inline" var_f = $typeof(f); "
+get f 0 $if==
+" null "
+$return
+end
+get f 1 $if==
+" int "
+$return
+end
+get f 2 $if==
+" float "
+$return
+end
+get f 3 $if==
+" bool "
+$return
+end
+get f 4 $if==
+" string "
+$return
+end
+get f 5 $if==
+" object "
+$return
+end
+get f 6 $if==
+" array "
+$return
+end
+get f 7 $if==
+" function "
+$return
+end
+get f 8 $if==
+" abstract "
+$return
+end
+endproc
+macro else
+inline" else{ "
+endmac
+macro pusha
+inline" stackptr+=1; stack[stackptr] = a; "
+endmac
+macro popa
+inline" a = stack[stackptr]; stackptr-=1; "
+endmac
+macro pushb
+inline" stackptr+=1; stack[stackptr] = b; "
+endmac
+macro popb
+inline" b = stack[stackptr]; stackptr-=1; "
+endmac
+proc input
+inline" a = __input__(); stackptr+=1; " $pusha
+endproc
+proc int
+$popa inline" b = $int(a); " $pushb
+endproc
+proc str
+$popa inline" b = $string(a); " $pushb
+endproc
+proc fopen
+$popa $popb inline" a = __fopen__(a,b); " $pusha
+endproc
+proc to_char
+$popa inline" a = __u8get__(a,0); " $pusha
+endproc
+proc strlen
+$popa inline" a = $ssize(a); " $pusha
+endproc
+proc fwritec
+$popa $popb inline" __fwritec__(a,b); "
+endproc
+proc fwrites
+init file
+init text
+0 init ctr
+get text @strlen $loop
+get text $popa inline" a = __u8get__(a,var_ctr); " $pusha get file @fwritec
+get ctr 1 + set ctr
+end
 endproc

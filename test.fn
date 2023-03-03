@@ -1,6 +1,5 @@
 #include stdlib.fn
 proc main
-1 1 $if==
-1 .
-end
+" w " " test.txt " @fopen set file
+" test file " get file @fwrites
 endproc
