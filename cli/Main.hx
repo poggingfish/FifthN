@@ -17,10 +17,6 @@ class Main{
             Sys.println("Process fncc exited with non zero exit code.");
             Sys.exit(1);
         }
-        if (Sys.command("nekoc", ["out.neko"]) != 0){
-            Sys.println("Process nekoc exited with non zero exit code.");
-            Sys.exit(1);
-        }
         if (Sys.command("rm", ["out.fn"]) != 0){
             Sys.println("Process rm exited with non zero exit code.");
             Sys.exit(1);

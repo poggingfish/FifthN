@@ -1,2 +1,2 @@
 # FifthN
-### A Fifth dialect targeting NekoVM
+### A Fifth dialect targeting Ruby

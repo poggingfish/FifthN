@@ -1,5 +1,16 @@
 #include stdlib.fn
-proc main
-" w " " test.txt " @fopen set file
-" test file " get file @fwrites
-endproc
+proc Main
+" w " " test.txt " @fopen set f
+0 set ctr
+@input @int set rows
+get rows $loop
+get ctr get rows - $loop
+"   " get f @fwrites
+end
+get ctr 2 * 1 + $loop
+" * " get f @fwrites
+end
+get ctr 1 + set ctr
+" \n " get f @fwrites
+end
+end

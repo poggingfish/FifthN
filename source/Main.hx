@@ -18,6 +18,8 @@ class Main{
             }
             i++;
         }
+        var r = ~/__\$home__/g;
+        sbuf = r.replace(sbuf,Sys.getEnv("HOME"));
         return [i, sbuf];
     }
     public static function main(){
@@ -28,15 +30,15 @@ class Main{
         var r = ~/\n/g;
         var f = File.read(Sys.args()[0]).readAll().toString();
         f = r.replace(f," ");
-        var out = File.write("out.neko");
+        var out = File.write("out.rb");
         var prog = f.split(" ");
         var i = 0;
         var callstack: Array<Int> = new Array<Int>();
         var macros: Map<String,Int> = new Map<String,Int>();
         var val = 0;
-        out.writeString("var stack = $amake(100);\n");
-        out.writeString("var stackptr = 0;\n");
-        out.writeString("var a=0;var b=0;\n");
+        out.writeString("require '~/.fh/lib/stacklib.rb'\n");
+        out.writeString("$stack = Stack.new\n");
+        out.writeString("a=0\nb=0\n");
         while (i < prog.length){
             var word = prog[i];
             if (word == "macro"){
@@ -51,43 +53,42 @@ class Main{
                 i = callstack.pop();
             }
             else if (word == "proc"){
-                out.writeString("var " + prog[++i] + " = function " + "(stack, stackptr){\n");
+                out.writeString("def " + prog[++i] + "()\n");
             }
             else if (word == "end"){
-                out.writeString("}\n");
-            }
-            else if (word == "endproc"){
-                out.writeString("var tmp = $amake(4);tmp[0] = stack;tmp[1]=stackptr;return tmp;}\n");
+                out.writeString("end\n");
             }
             else if (word == "."){
-                out.writeString("$print(stack[stackptr]);stackptr=stackptr-1;\n");
+                out.writeString("print $stack.Pop()\n");
             }
             else if (word == "+"){
-                out.writeString("a = stack[stackptr];stackptr=stackptr-1;b = stack[stackptr];stackptr=stackptr+1;stack[stackptr] = a + b;\n");
+                out.writeString("$stack.Push($stack.Pop()+$stack.Pop())\n");
             }
             else if (word == "-"){
-                out.writeString("a = stack[stackptr];stackptr=stackptr-1;b = stack[stackptr];stackptr=stackptr+1;stack[stackptr] = a - b;\n");
+                out.writeString("$stack.Push($stack.Pop()-$stack.Pop())\n");
             }
             else if (word == "*"){
-                out.writeString("a = stack[stackptr];stackptr=stackptr-1;b = stack[stackptr];stackptr=stackptr+1;stack[stackptr] = a * b;\n");
+                out.writeString("$stack.Push($stack.Pop()*$stack.Pop())\n");
             }
             else if (word == "/"){
-                out.writeString("a = stack[stackptr];stackptr=stackptr-1;b = stack[stackptr];stackptr=stackptr+1;stack[stackptr] = a / b;\n");
+                out.writeString("$stack.Push($stack.Pop()/$stack.Pop())\n");
             }
             else if (word == "\""){
                 var _ = parsestr(i,prog);
                 i = cast _[0];
                 var sbuf: String = cast _[1];
-                out.writeString("stackptr=stackptr+1;stack[stackptr]=\""+sbuf+"\";\n");
+                out.writeString("$stack.Push(\""+sbuf+"\");\n");
             }
             else if (word == "inline\""){
                 var _ = parsestr(i,prog);
+                var p = ~/\\n/gmi;
+                _[1] = p.replace(_[1],"\n");
                 i = cast _[0];
                 var sbuf: String = cast _[1];
                 out.writeString(sbuf);
             }
             else if (word.charAt(0) == "@"){
-                out.writeString("a = "+word.substr(1) + "(stack,stackptr);stack = a[0];stackptr=a[1];\n");
+                out.writeString(word.substr(1) + "()\n");
             }
             else if (word.charAt(0) == "$"){
                 callstack.push(i);
@@ -106,20 +107,17 @@ class Main{
             else if (word == "getval"){
                 out.writeString("val_"+val);
             }
-            else if (word == "init"){
-                out.writeString("var var_" + prog[++i] + " = stack[stackptr]; stackptr=stackptr-1;\n");
-            }
             else if (word == "set"){
-                out.writeString("var_"+prog[++i] + " = stack[stackptr]; stackptr=stackptr-1;\n");
+                out.writeString("var_"+prog[++i] + " = $stack.Pop()\n");
             }
             else if (word == "get"){
-                out.writeString("stackptr=stackptr+1; stack[stackptr] = var_" + prog[++i]+";\n");
+                out.writeString("$stack.Push(var_"+prog[++i]+")\n");
             }
             else if(Std.parseInt(word) != null){
-                out.writeString("stackptr=stackptr+1;stack[stackptr]="+word+";\n");
+                out.writeString("$stack.Push("+word+")\n");
             }
             i++;
         }
-        out.writeString("main(stack,stackptr);");
+        out.writeString("Main()");
     }
 }
