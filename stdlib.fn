@@ -23,6 +23,12 @@ endmac
 macro if<=
 $beginif inline" <= " $endif
 endmac
+macro return
+inline" return\n "
+endmac
+macro else
+inline" else\n "
+endmac
 proc dup
 inline" $stack.Push($stack.Peek) "
 end
@@ -32,12 +38,6 @@ end
 proc println
 . " \n " .
 end
-macro return
-inline" return\n "
-end
-macro else
-inline" else{ "
-endmac
 proc input
 inline" $stack.Push(gets.chomp)\n "
 end
