@@ -1,8 +1,4 @@
 #include stdlib.fn
 proc Main
-@input @input $if==
-" Equal " @println
-$else
-" Not Equal " @println
-end
+" " " @ " " @test " @startswith .
 end

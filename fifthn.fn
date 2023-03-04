@@ -1,0 +1,53 @@
+#include stdlib.fn
+macro write
+get file @fwrites
+endmac
+macro tget
+get ctr get arr @index
+endmac
+proc Main
+" w " " fnout.rb " @fopen set file
+" require '~/.fh/lib/stacklib.rb'\n " $write
+" require '~/.fh/lib/tryparse.rb'\n " $write
+" $stack = Stack.new\n " $write
+" a=0\nb=0\n " $write
+"   " " proc idk 2 2 + . end proc Main 1 1 + . @idk end " @split set arr
+get arr @length set arrlen
+0 set ctr
+$whiletrue
+$tget @tryparse @ptrue $if==
+" $stack.Push( " $write $tget $write " )\n " $write
+$else
+" @ " $tget @startswith @ptrue $if==
+" " " @ " $tget @sub $write " ()\n " $write
+end
+$tget " + " $if==
+" $stack.Push($stack.Pop+$stack.Pop)\n " $write
+end
+$tget " - " $if==
+" $stack.Push($stack.Pop-$stack.Pop)\n " $write
+end
+$tget " * " $if==
+" $stack.Push($stack.Pop*$stack.Pop)\n " $write
+end
+$tget " / " $if==
+" $stack.Push($stack.Pop/$stack.Pop)\n " $write
+end
+$tget " . " $if==
+" print $stack.Pop\n " $write
+end
+$tget " end " $if==
+" end\n " $write
+end
+$tget " proc " $if==
+get ctr 1 + set ctr
+" def  " $write $tget $write " ()\n " $write 
+end
+end
+get ctr 1 + set ctr
+get ctr get arrlen $if<=
+$break
+end
+end
+" Main() " $write
+end

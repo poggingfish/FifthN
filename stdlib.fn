@@ -1,3 +1,4 @@
+inline" $_tryparse = Tryparse.new\n "
 macro loop
 nextval
 inline" for  " getval inline"  in 1..$stack.Pop() do\n " 
@@ -30,7 +31,7 @@ macro else
 inline" else\n "
 endmac
 proc dup
-inline" $stack.Push($stack.Peek) "
+inline" $stack.Push($stack.Peek)\n "
 end
 proc swap
 inline" a=$stack.Pop()\nb=$stack.Pop()\n$stack.Push(a)\n$stack.Push(b)\n "
@@ -50,3 +51,36 @@ end
 proc int
 inline" $stack.Push($stack.Pop().to_i)\n "
 end
+proc split
+inline" $stack.Push($stack.Pop().split($stack.Pop))\n "
+end
+proc length
+inline" $stack.Push($stack.Pop().length())\n "
+end
+proc index
+inline" $stack.Push($stack.Pop()[$stack.Pop()])\n "
+end
+proc ptrue
+inline" $stack.Push(true)\n "
+end
+proc pfalse
+inline" $stack.Push(false)\n "
+end
+proc tryparse
+inline" $stack.Push($_tryparse.intparse($stack.Pop))\n "
+end
+proc startswith
+inline" a = $stack.Pop()\nb = $stack.Pop()\n$stack.Push(a.start_with?(b))\n "
+end
+proc sub
+inline" $stack.Push($stack.Pop().sub($stack.Pop(), $stack.Pop()))\n "
+end
+proc gsub
+inline" $stack.Push($stack.Pop().gsub($stack.Pop(), $stack.Pop()))\n "
+end
+macro whiletrue
+inline" while true\n "
+endmac
+macro break
+inline" break\n "
+endmac

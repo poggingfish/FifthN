@@ -37,6 +37,7 @@ class Main{
         var macros: Map<String,Int> = new Map<String,Int>();
         var val = 0;
         out.writeString("require '~/.fh/lib/stacklib.rb'\n");
+        out.writeString("require '~/.fh/lib/tryparse.rb'\n");
         out.writeString("$stack = Stack.new\n");
         out.writeString("a=0\nb=0\n");
         while (i < prog.length){
